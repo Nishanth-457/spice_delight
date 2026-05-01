@@ -8,7 +8,7 @@ import hashlib
 import os
 
 app = Flask(__name__)
-app.secret_key = 'spicedelight_secret_key_2025'
+app.secret_key = os.environ.get('FLASK_SECRET_KEY')
 
 # ============================================================
 # DATABASE SETTINGS — Railway MySQL
