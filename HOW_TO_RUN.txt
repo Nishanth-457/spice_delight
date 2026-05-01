@@ -1,0 +1,118 @@
+╔══════════════════════════════════════════════════════════════╗
+║         SPICE DELIGHT — Complete Setup Guide                 ║
+║         Follow every step in order!                          ║
+╚══════════════════════════════════════════════════════════════╝
+
+STEP 1 — Copy your food images
+-----------------------------------------------
+Take all images from your original project
+(PannerTikka.jpg, Chicken65.jpg, Banner.jpg etc.)
+and paste them into:
+
+    spice_delight/static/images/
+
+
+STEP 2 — Install Python packages
+-----------------------------------------------
+Open terminal inside the spice_delight folder and run:
+
+    pip install -r requirements.txt
+
+
+STEP 3 — Set up the database
+-----------------------------------------------
+Open MySQL Workbench.
+Click File > Open SQL Script > select spice_delight.sql
+Press the Run (lightning bolt) button.
+
+This creates:
+  - spice_delight database
+  - 4 tables (users, menu_items, orders, order_items)
+  - 36 menu items already loaded
+  - 1 admin account already created
+
+
+STEP 4 — Set your MySQL password in app.py
+-----------------------------------------------
+Open app.py and look for this line near the top:
+
+    app.config['MYSQL_PASSWORD'] = ''
+
+If your MySQL has a password, type it between the quotes.
+If no password (most college setups), leave it blank.
+
+
+STEP 5 — Verify everything is working
+-----------------------------------------------
+Run the checker script:
+
+    python check_setup.py
+
+All items should show a checkmark.
+
+
+STEP 6 — Start the website!
+-----------------------------------------------
+Run:
+    python app.py
+
+Open your browser and go to:
+    http://127.0.0.1:5000
+
+
+LOGIN DETAILS
+-----------------------------------------------
+ADMIN:
+  Email:    admin@spicedelight.com
+  Password: admin123
+  Admin panel: http://127.0.0.1:5000/admin
+
+NORMAL USER:
+  Click "Create an account" on the login page
+  Sign up with any email and password
+
+
+FOLDER STRUCTURE
+-----------------------------------------------
+spice_delight/
+|
+|-- app.py                  Flask backend (the brain)
+|-- requirements.txt        Python packages list
+|-- spice_delight.sql       Run this in MySQL Workbench
+|-- check_setup.py          Run this to verify setup
+|-- HOW_TO_RUN.txt          This file
+|
+|-- templates/              All HTML pages
+|   |-- login.html
+|   |-- signup.html
+|   |-- menu.html
+|   |-- my_orders.html
+|   |-- admin.html
+|
+|-- static/                 CSS, JS, Images
+    |-- style1.css
+    |-- script.js
+    |-- images/             PASTE ALL YOUR FOOD IMAGES HERE
+        |-- Banner.jpg
+        |-- PannerTikka.jpg
+        |-- Chicken65.jpg
+        |-- (all other images...)
+
+
+JURY TIPS — What to say to your professor
+-----------------------------------------------
+"We used a relational database with 4 tables connected
+ by foreign keys."
+
+"Passwords are hashed using SHA256 so they are never
+ stored as plain text."
+
+"The menu is fully dynamic - it loads from MySQL,
+ not hardcoded in JavaScript."
+
+"Sessions are used to keep the user logged in across pages."
+
+Show LIVE during jury:
+  1. Sign up as a new user -> show new row in users table
+  2. Place an order -> show new rows in orders + order_items
+  3. Login as admin -> add a new menu item -> show it appear live

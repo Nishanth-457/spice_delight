@@ -1,0 +1,21 @@
+body {
+    background-color: #fffaf0;
+    font-family: sans-serif;
+}
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+.card {
+    transition: transform 0.3s;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+.hero-banner {
+background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('images/Banner.jpg');
+background-size: cover;
+background-position: center;
+padding: 100px 0;
+}

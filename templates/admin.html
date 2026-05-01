@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel — Spice Delight</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: #f8f9fa; }
+    .sidebar {
+      background: #1a1a2e;
+      min-height: 100vh;
+      padding: 24px 16px;
+      color: white;
+    }
+    .sidebar h4 { color: #e74c3c; font-weight: 700; }
+    .nav-link { color: #ccc; border-radius: 8px; margin-bottom: 4px; }
+    .nav-link:hover, .nav-link.active { background: #e74c3c; color: white; }
+    .section { display: none; }
+    .section.active { display: block; }
+    .stat-card { border-radius: 12px; padding: 20px; color: white; }
+  </style>
+</head>
+<body>
+<div class="d-flex">
+
+  <!-- ===== SIDEBAR ===== -->
+  <div class="sidebar" style="width: 220px; min-width:220px;">
+    <h4 class="mb-1">🍽️ Admin</h4>
+    <p style="font-size:12px; color:#888;">Spice Delight Panel</p>
+    <hr style="border-color:#333">
+    <nav class="nav flex-column mt-2">
+      <a class="nav-link active px-3 py-2" onclick="showSection('dashboard')">📊 Dashboard</a>
+      <a class="nav-link px-3 py-2"        onclick="showSection('menu')">🍕 Manage Menu</a>
+      <a class="nav-link px-3 py-2"        onclick="showSection('orders')">📦 View Orders</a>
+      <a class="nav-link px-3 py-2"        onclick="showSection('additem')">➕ Add Item</a>
+    </nav>
+    <hr style="border-color:#333; margin-top: auto;">
+    <a href="/menu" class="nav-link px-3 py-2">← Back to Website</a>
+    <a href="/logout" class="nav-link px-3 py-2 text-danger">🚪 Logout</a>
+  </div>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <div class="flex-grow-1 p-4">
+
+    <!-- DASHBOARD SECTION -->
+    <div id="section-dashboard" class="section active">
+      <h4 class="fw-bold mb-4">📊 Dashboard</h4>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="stat-card" style="background:#e74c3c;">
+            <div style="font-size:32px;">🍕</div>
+            <h2 class="fw-bold mt-2">{{ menu_items|length }}</h2>
+            <p class="mb-0">Total Menu Items</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="stat-card" style="background:#2ecc71;">
+            <div style="font-size:32px;">📦</div>
+            <h2 class="fw-bold mt-2">{{ orders|length }}</h2>
+            <p class="mb-0">Total Orders</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="stat-card" style="background:#3498db;">
+            <div style="font-size:32px;">💰</div>
+            <h2 class="fw-bold mt-2">
+              ₹{% set total = namespace(val=0) %}
+              {% for o in orders %}{% set total.val = total.val + o[2] %}{% endfor %}
+              {{ total.val }}
+            </h2>
+            <p class="mb-0">Total Revenue</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MANAGE MENU SECTION -->
+    <div id="section-menu" class="section">
+      <h4 class="fw-bold mb-4">🍕 Manage Menu</h4>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover bg-white shadow-sm rounded">
+          <thead class="table-dark">
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in menu_items %}
+            <tr>
+              <td>{{ item[0] }}</td>
+              <td>{{ item[1] }}</td>
+              <td>
+                <span class="badge {{ 'bg-success' if item[2]=='veg' else 'bg-danger' }}">
+                  {{ item[2] }}
+                </span>
+              </td>
+              <td>₹{{ item[3] }}</td>
+              <td>
+                {% if item[6] == 1 %}
+                  <span class="badge bg-success">Visible</span>
+                {% else %}
+                  <span class="badge bg-secondary">Hidden</span>
+                {% endif %}
+              </td>
+              <td>
+                <!-- Toggle show/hide -->
+                <a href="/admin/toggle_item/{{ item[0] }}"
+                   class="btn btn-sm {{ 'btn-warning' if item[6]==1 else 'btn-success' }} me-1">
+                   {{ 'Hide' if item[6]==1 else 'Show' }}
+                </a>
+                <!-- Delete (with confirmation) -->
+                <a href="/admin/delete_item/{{ item[0] }}"
+                   class="btn btn-sm btn-danger"
+                   onclick="return confirm('Delete {{ item[1] }}? This cannot be undone.')">
+                   Delete
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- VIEW ORDERS SECTION -->
+    <div id="section-orders" class="section">
+      <h4 class="fw-bold mb-4">📦 All Orders</h4>
+      {% if orders %}
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover bg-white shadow-sm rounded">
+          <thead class="table-dark">
+            <tr>
+              <th>Order #</th>
+              <th>Customer</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in orders %}
+            <tr>
+              <td>#{{ order[0] }}</td>
+              <td>{{ order[1] }}</td>
+              <td>₹{{ order[2] }}</td>
+              <td>
+                {% if order[3] == 'delivered' %}
+                  <span class="badge bg-success">Delivered</span>
+                {% elif order[3] == 'preparing' %}
+                  <span class="badge bg-warning text-dark">Preparing</span>
+                {% else %}
+                  <span class="badge bg-primary">Placed</span>
+                {% endif %}
+              </td>
+              <td style="font-size:12px;">{{ order[4] }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+        <p class="text-muted">No orders placed yet.</p>
+      {% endif %}
+    </div>
+
+    <!-- ADD ITEM SECTION -->
+    <div id="section-additem" class="section">
+      <h4 class="fw-bold mb-4">➕ Add New Menu Item</h4>
+      <div class="card shadow-sm p-4" style="max-width:500px;">
+        <form method="POST" action="/admin/add_item">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Item Name</label>
+            <input type="text" name="name" class="form-control" placeholder="e.g. Butter Chicken" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Category</label>
+            <select name="category" class="form-select" required>
+              <option value="veg">🟢 Veg</option>
+              <option value="non-veg">🔴 Non-Veg</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Price (₹)</label>
+            <input type="number" name="price" class="form-control" placeholder="e.g. 299" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Image Path</label>
+            <input type="text" name="img" class="form-control" placeholder="images/FileName.jpg">
+            <div class="form-text">Put the image in your static/images/ folder first.</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Ingredients</label>
+            <textarea name="ingredients" class="form-control" rows="3"
+                      placeholder="e.g. Chicken, Butter, Cream, Spices"></textarea>
+          </div>
+          <button type="submit" class="btn btn-danger w-100 fw-semibold">Add to Menu</button>
+        </form>
+      </div>
+    </div>
+
+  </div><!-- end main content -->
+</div><!-- end flex -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Switch between sidebar sections
+  function showSection(name) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    document.getElementById('section-' + name).classList.add('active');
+    event.target.classList.add('active');
+  }
+</script>
+</body>
+</html>
