@@ -16,7 +16,7 @@ app.secret_key = os.environ.get('FLASK_SECRET_KEY')
 # ============================================================
 DB_HOST     = os.environ.get('MYSQLHOST',     'mysql.railway.internal')
 DB_USER     = os.environ.get('MYSQLUSER',     'root')
-DB_PASSWORD = os.environ.get('MYSQLPASSWORD', 'SaKyjNPtmbZAVJTQqGbDCzIljnZJNvgi')
+DB_PASSWORD = os.environ.get('MYSQLPASSWORD', 'nishanth@rvu')
 DB_NAME     = os.environ.get('MYSQLDATABASE', 'railway')
 DB_PORT     = int(os.environ.get('MYSQLPORT', 3306))
 
