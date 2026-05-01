@@ -1,23 +1,23 @@
 # ============================================================
-#  SPICE DELIGHT — Main Flask Application
-#  This is the BRAIN of your website (the backend)
-#  Run this file to start your server
+#  SPICE DELIGHT — Main Flask Application (Railway Version)
 # ============================================================
 
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 import pymysql
 import hashlib
+import os
 
 app = Flask(__name__)
 app.secret_key = 'spicedelight_secret_key_2025'
 
 # ============================================================
-# DATABASE SETTINGS — change DB_PASSWORD if needed
+# DATABASE SETTINGS — Railway MySQL
 # ============================================================
-DB_HOST     = 'localhost'
-DB_USER     = 'root'
-DB_PASSWORD = 'Nishanth@07'        # put your MySQL password here if you have one
-DB_NAME     = 'spice_delight'
+DB_HOST     = os.environ.get('MYSQLHOST',     'mysql.railway.internal')
+DB_USER     = os.environ.get('MYSQLUSER',     'root')
+DB_PASSWORD = os.environ.get('MYSQLPASSWORD', 'SaKyjNPtmbZAVJTQqGbDCzIljnZJNvgi')
+DB_NAME     = os.environ.get('MYSQLDATABASE', 'railway')
+DB_PORT     = int(os.environ.get('MYSQLPORT', 3306))
 
 def get_db():
     return pymysql.connect(
@@ -25,12 +25,10 @@ def get_db():
         user=DB_USER,
         password=DB_PASSWORD,
         database=DB_NAME,
+        port=DB_PORT,
         cursorclass=pymysql.cursors.Cursor
     )
 
-# ============================================================
-# HELPER: Hash a password (we never store plain text!)
-# ============================================================
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
@@ -237,4 +235,5 @@ def toggle_item(item_id):
 # START SERVER
 # ============================================================
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
