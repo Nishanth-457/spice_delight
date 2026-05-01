@@ -4,140 +4,309 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Spice Delight</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="/static/style1.css">
   <style>
-    .card { transition: transform 0.3s; }
-    .card:hover { transform: translateY(-5px); }
-    .hero-banner {
-      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/static/images/Banner.jpg');
-      background-size: cover;
-      background-position: center;
-      padding: 100px 0;
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root { --cream:#F7F3EE; --dark:#1C1917; --muted:#78716C; --accent:#C4783C; --border:#E5DDD5; --card:#FFFFFF; }
+
+    body { background:var(--cream); font-family:'Jost',sans-serif; color:var(--dark); }
+
+    /* NAVBAR */
+    .navbar {
+      background:var(--cream);
+      border-bottom:1px solid var(--border);
+      padding:20px 40px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      position:sticky;
+      top:0;
+      z-index:100;
     }
+    .nav-brand {
+      font-family:'Cormorant Garamond',serif;
+      font-size:22px;
+      font-weight:400;
+      color:var(--dark);
+      letter-spacing:1px;
+    }
+    .nav-brand span { color:var(--accent); font-style:italic; }
+    .nav-right { display:flex; align-items:center; gap:24px; }
+    .nav-greeting { font-size:12px; font-weight:300; color:var(--muted); letter-spacing:.5px; }
+    .nav-btn {
+      background:none;
+      border:1px solid var(--border);
+      padding:8px 18px;
+      font-family:'Jost',sans-serif;
+      font-size:11px;
+      font-weight:500;
+      letter-spacing:1.5px;
+      text-transform:uppercase;
+      color:var(--dark);
+      cursor:pointer;
+      text-decoration:none;
+      transition:all .2s;
+      display:inline-block;
+    }
+    .nav-btn:hover { background:var(--dark); color:#fff; border-color:var(--dark); }
+    .nav-btn.accent { background:var(--dark); color:#fff; border-color:var(--dark); }
+    .nav-btn.accent:hover { background:var(--accent); border-color:var(--accent); }
+    .cart-count {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:18px;
+      height:18px;
+      background:var(--accent);
+      color:#fff;
+      border-radius:50%;
+      font-size:10px;
+      font-weight:500;
+      margin-left:6px;
+    }
+
+    /* HERO */
+    .hero {
+      text-align:center;
+      padding:80px 40px 60px;
+      border-bottom:1px solid var(--border);
+    }
+    .hero-label {
+      font-size:11px;
+      font-weight:500;
+      letter-spacing:3px;
+      text-transform:uppercase;
+      color:var(--accent);
+      margin-bottom:16px;
+    }
+    .hero h1 {
+      font-family:'Cormorant Garamond',serif;
+      font-size:64px;
+      font-weight:300;
+      color:var(--dark);
+      line-height:1;
+      letter-spacing:-1px;
+    }
+    .hero h1 em { font-style:italic; color:var(--accent); }
+    .hero p { margin-top:16px; font-size:14px; font-weight:300; color:var(--muted); }
+
+    /* FILTERS */
+    .filters {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:0;
+      padding:32px 40px;
+      border-bottom:1px solid var(--border);
+    }
+    .filter-btn {
+      padding:10px 28px;
+      border:1px solid var(--border);
+      background:transparent;
+      font-family:'Jost',sans-serif;
+      font-size:11px;
+      font-weight:500;
+      letter-spacing:1.5px;
+      text-transform:uppercase;
+      color:var(--muted);
+      cursor:pointer;
+      transition:all .2s;
+      margin:0 -0.5px;
+    }
+    .filter-btn:hover,.filter-btn.active { background:var(--dark); color:#fff; border-color:var(--dark); z-index:1; position:relative; }
+
+    /* MENU GRID */
+    .menu-section { padding:48px 40px; }
+    .menu-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:1px; background:var(--border); }
+    .menu-card { background:var(--card); overflow:hidden; transition:transform .3s; }
+    .menu-card:hover { transform:translateY(-4px); box-shadow:0 20px 40px rgba(0,0,0,0.08); }
+    .card-img { position:relative; overflow:hidden; height:200px; }
+    .card-img img { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
+    .menu-card:hover .card-img img { transform:scale(1.05); }
+    .card-badge {
+      position:absolute;
+      top:12px;
+      left:12px;
+      padding:3px 10px;
+      font-size:9px;
+      font-weight:500;
+      letter-spacing:1.5px;
+      text-transform:uppercase;
+      border-radius:2px;
+    }
+    .badge-veg { background:rgba(255,255,255,.9); color:#15803D; }
+    .badge-nonveg { background:rgba(255,255,255,.9); color:#B91C1C; }
+    .card-body { padding:20px; }
+    .card-name { font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:400; color:var(--dark); margin-bottom:4px; }
+    .card-ing { font-size:11px; font-weight:300; color:var(--muted); margin-bottom:16px; line-height:1.5; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .card-footer { display:flex; align-items:center; justify-content:space-between; }
+    .card-price { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:400; color:var(--dark); }
+    .card-actions { display:flex; gap:8px; }
+    .btn-ing {
+      padding:7px 12px;
+      border:1px solid var(--border);
+      background:transparent;
+      font-family:'Jost',sans-serif;
+      font-size:10px;
+      font-weight:500;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      color:var(--muted);
+      cursor:pointer;
+      transition:all .2s;
+    }
+    .btn-ing:hover { border-color:var(--dark); color:var(--dark); }
+    .btn-add {
+      padding:7px 16px;
+      border:1px solid var(--dark);
+      background:var(--dark);
+      font-family:'Jost',sans-serif;
+      font-size:10px;
+      font-weight:500;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      color:#fff;
+      cursor:pointer;
+      transition:all .2s;
+    }
+    .btn-add:hover { background:var(--accent); border-color:var(--accent); }
+
+    /* MODALS */
+    .modal-content { border:none; border-radius:0; }
+    .modal-header { border-bottom:1px solid var(--border); padding:20px 24px; }
+    .modal-title { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:400; }
+    .modal-footer { border-top:1px solid var(--border); padding:16px 24px; }
+    .modal-body { padding:24px; }
+    .cart-item { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--border); }
+    .cart-item:last-child { border-bottom:none; }
+    .cart-item-name { font-size:14px; font-weight:400; color:var(--dark); }
+    .cart-item-price { font-size:12px; font-weight:300; color:var(--muted); margin-top:2px; }
+    .qty-controls { display:flex; align-items:center; gap:10px; }
+    .qty-btn { width:26px; height:26px; border:1px solid var(--border); background:transparent; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s; color:var(--dark); }
+    .qty-btn:hover { background:var(--dark); color:#fff; border-color:var(--dark); }
+    .cart-total { font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:400; text-align:right; margin-top:16px; }
+    .form-control { border:none; border-bottom:1px solid var(--border); border-radius:0; background:transparent; padding:10px 0; font-family:'Jost',sans-serif; font-size:14px; font-weight:300; }
+    .form-control:focus { box-shadow:none; border-bottom-color:var(--accent); }
+    .form-label { font-size:10px; font-weight:500; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+    .btn-modal { padding:14px 32px; background:var(--dark); color:#fff; border:none; font-family:'Jost',sans-serif; font-size:11px; font-weight:500; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:background .2s; width:100%; }
+    .btn-modal:hover { background:var(--accent); }
+    .empty-cart { text-align:center; padding:32px; color:var(--muted); }
+    .empty-cart .icon { font-size:36px; margin-bottom:12px; }
+    .empty-cart p { font-size:13px; font-weight:300; }
   </style>
 </head>
 <body>
 
-<!-- ===================== NAVBAR ===================== -->
-<nav class="navbar navbar-dark bg-dark sticky-top">
-  <div class="container">
-    <a class="navbar-brand fw-bold" href="#">🍽️ Spice Delight</a>
-    <div class="d-flex align-items-center gap-3">
-      <!-- Welcome message -->
-      <span class="text-white" style="font-size:14px">Hi, {{ user_name }}!</span>
-      <!-- My Orders button -->
-      <a href="/my_orders" class="btn btn-outline-light btn-sm">My Orders</a>
-      <!-- Cart button -->
-      <button class="btn btn-warning btn-sm" onclick="showCart()">
-        🛒 Cart <span class="badge bg-danger" id="cart-count">0</span>
-      </button>
-      <!-- Logout -->
-      <a href="/logout" class="btn btn-outline-danger btn-sm">Logout</a>
-    </div>
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-brand">Spice <span>Delight</span></div>
+  <div class="nav-right">
+    <span class="nav-greeting">Hello, {{ user_name }}</span>
+    <a href="/my_orders" class="nav-btn">Orders</a>
+    <button class="nav-btn accent" onclick="showCart()">
+      Cart <span class="cart-count" id="cart-count">0</span>
+    </button>
+    <a href="/logout" class="nav-btn">Logout</a>
   </div>
 </nav>
 
-<!-- ===================== HERO BANNER ===================== -->
-<div class="container-fluid text-white text-center py-5 hero-banner">
-  <h1 class="fw-bold">Spice Delight</h1>
-  <p class="lead">Fresh food delivered to your doorstep.</p>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">Est. 2024 — Authentic Indian Cuisine</div>
+  <h1>Our <em>Menu</em></h1>
+  <p>Handcrafted dishes, made fresh every day.</p>
 </div>
 
-<!-- ===================== FILTER BUTTONS ===================== -->
-<div class="container text-center mt-4">
-  <button class="btn btn-dark me-2"    onclick="filterMenu('all')">Show All</button>
-  <button class="btn btn-success me-2" onclick="filterMenu('veg')">🟢 Pure Veg</button>
-  <button class="btn btn-danger"       onclick="filterMenu('non-veg')">🔴 Non-Veg</button>
+<!-- FILTERS -->
+<div class="filters">
+  <button class="filter-btn active" onclick="filterMenu('all', this)">All</button>
+  <button class="filter-btn" onclick="filterMenu('veg', this)">Vegetarian</button>
+  <button class="filter-btn" onclick="filterMenu('non-veg', this)">Non-Vegetarian</button>
 </div>
 
-<!-- ===================== MENU GRID ===================== -->
-<div class="container mt-4">
-  <div class="row" id="menu-container">
-
-    {# Jinja2 template: item[0]=id, item[1]=name, item[2]=category, item[3]=price, item[4]=img, item[5]=ingredients #}
+<!-- MENU -->
+<div class="menu-section">
+  <div class="menu-grid" id="menu-container">
     {% for item in menu_items %}
-    <div class="col-md-4 mb-4 menu-card" data-category="{{ item[2] }}">
-      <div class="card h-100 shadow-sm">
-        <img src="/static/{{ item[4] }}" class="card-img-top" style="height:200px; object-fit:cover;"
-             onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
-        <div class="card-body text-center">
-          <h5 class="card-title">{{ item[1] }}</h5>
-          <span class="badge {{ 'bg-success' if item[2] == 'veg' else 'bg-danger' }} mb-2">
-            {{ item[2] }}
-          </span>
-          <h4 class="text-dark">₹{{ item[3] }}</h4>
-          <button class="btn btn-sm btn-outline-dark mb-2 w-100"
-                  onclick="showIngredients('{{ item[1] }}', '{{ item[5] }}')">
-            View Ingredients
-          </button>
-          <button class="btn btn-warning w-100"
-                  onclick="addToCart({{ item[0] }}, '{{ item[1] }}', {{ item[3] }})">
-            Add to Cart
-          </button>
+    <div class="menu-card" data-category="{{ item[2] }}">
+      <div class="card-img">
+        <img src="/static/{{ item[4] }}" alt="{{ item[1] }}"
+             onerror="this.src='https://via.placeholder.com/400x200/F7F3EE/78716C?text={{ item[1] }}'">
+        <span class="card-badge {{ 'badge-veg' if item[2]=='veg' else 'badge-nonveg' }}">
+          {{ '● Veg' if item[2]=='veg' else '● Non-Veg' }}
+        </span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">{{ item[1] }}</div>
+        <div class="card-ing">{{ item[5] }}</div>
+        <div class="card-footer">
+          <div class="card-price">₹{{ item[3] }}</div>
+          <div class="card-actions">
+            <button class="btn-ing" onclick="showIngredients('{{ item[1] }}', '{{ item[5] }}')">Info</button>
+            <button class="btn-add" onclick="addToCart({{ item[0] }}, '{{ item[1] }}', {{ item[3] }})">+ Add</button>
+          </div>
         </div>
       </div>
     </div>
     {% endfor %}
-
   </div>
 </div>
 
-<!-- ===================== CART MODAL ===================== -->
+<!-- CART MODAL -->
 <div class="modal fade" id="cartModal" tabindex="-1">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-dialog-end">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">🛒 Your Cart</h5>
+        <h5 class="modal-title">Your Cart</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <ul id="cart-items" class="list-group"></ul>
-        <h4 class="mt-3 text-end">Total: ₹<span id="cart-total">0</span></h4>
+        <div id="cart-items"></div>
+        <div class="cart-total">Total: ₹<span id="cart-total">0</span></div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button class="btn btn-success" onclick="openCheckout()">Checkout →</button>
+        <button class="btn-modal" onclick="openCheckout()">Proceed to Checkout</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ===================== INGREDIENTS MODAL ===================== -->
+<!-- INGREDIENTS MODAL -->
 <div class="modal fade" id="ingredientsModal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="ing-title">Ingredients</h5>
+        <h5 class="modal-title" id="ing-title"></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <p id="ing-text"></p>
+        <p style="font-size:14px;font-weight:300;color:var(--muted);line-height:1.8" id="ing-text"></p>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ===================== CHECKOUT MODAL ===================== -->
+<!-- CHECKOUT MODAL -->
 <div class="modal fade" id="checkoutModal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">📦 Checkout</h5>
+        <h5 class="modal-title">Checkout</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Name</label>
+        <div class="mb-4">
+          <label class="form-label">Full Name</label>
           <input type="text" class="form-control" id="customer-name" placeholder="Your name">
         </div>
         <div class="mb-3">
-          <label class="form-label fw-semibold">Delivery Address</label>
+          <label class="form-label">Delivery Address</label>
           <textarea class="form-control" id="customer-address" rows="3" placeholder="Your full address"></textarea>
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-success w-100" onclick="confirmOrder()">✅ Place Order</button>
+        <button class="btn-modal" onclick="confirmOrder()">Place Order</button>
       </div>
     </div>
   </div>
@@ -145,5 +314,14 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/static/script.js"></script>
+<script>
+function filterMenu(filter, el) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.menu-card').forEach(card => {
+    card.style.display = (filter === 'all' || card.dataset.category === filter) ? 'block' : 'none';
+  });
+}
+</script>
 </body>
 </html>
