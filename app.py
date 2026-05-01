@@ -6,7 +6,8 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 import pymysql
 import hashlib
 import os
-
+from dotenv import load_dotenv
+load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY')
 
