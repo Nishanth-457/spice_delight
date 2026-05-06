@@ -29,7 +29,7 @@ DB_PASSWORD = ''   # change this if your MySQL has a password
 
 try:
     conn = pymysql.connect(host='localhost', user='root',
-                           password='Nishanth@07', database='spice_delight')
+                           password='nishanth@rvu', database='spice_delight')
     cur = conn.cursor()
     for table in ['users','menu_items','orders','order_items']:
         cur.execute(f"SHOW TABLES LIKE '{table}'")

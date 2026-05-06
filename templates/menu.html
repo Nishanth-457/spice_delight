@@ -9,170 +9,89 @@
   <style>
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
     :root { --cream:#F7F3EE; --dark:#1C1917; --muted:#78716C; --accent:#C4783C; --border:#E5DDD5; --card:#FFFFFF; }
-
     body { background:var(--cream); font-family:'Jost',sans-serif; color:var(--dark); }
 
-    /* NAVBAR */
+    /* ── NAVBAR ── */
     .navbar {
-      background:var(--cream);
-      border-bottom:1px solid var(--border);
-      padding:20px 40px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      position:sticky;
-      top:0;
-      z-index:100;
+      background:var(--cream); border-bottom:1px solid var(--border);
+      padding:20px 40px; display:flex; align-items:center;
+      justify-content:space-between; position:sticky; top:0; z-index:200;
     }
-    .nav-brand {
-      font-family:'Cormorant Garamond',serif;
-      font-size:22px;
-      font-weight:400;
-      color:var(--dark);
-      letter-spacing:1px;
-    }
+    .nav-brand { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:400; color:var(--dark); letter-spacing:1px; }
     .nav-brand span { color:var(--accent); font-style:italic; }
     .nav-right { display:flex; align-items:center; gap:24px; }
     .nav-greeting { font-size:12px; font-weight:300; color:var(--muted); letter-spacing:.5px; }
-    .nav-btn {
-      background:none;
-      border:1px solid var(--border);
-      padding:8px 18px;
-      font-family:'Jost',sans-serif;
-      font-size:11px;
-      font-weight:500;
-      letter-spacing:1.5px;
-      text-transform:uppercase;
-      color:var(--dark);
-      cursor:pointer;
-      text-decoration:none;
-      transition:all .2s;
-      display:inline-block;
-    }
+    .nav-btn { background:none; border:1px solid var(--border); padding:8px 18px; font-family:'Jost',sans-serif; font-size:11px; font-weight:500; letter-spacing:1.5px; text-transform:uppercase; color:var(--dark); cursor:pointer; text-decoration:none; transition:all .2s; display:inline-block; }
     .nav-btn:hover { background:var(--dark); color:#fff; border-color:var(--dark); }
     .nav-btn.accent { background:var(--dark); color:#fff; border-color:var(--dark); }
     .nav-btn.accent:hover { background:var(--accent); border-color:var(--accent); }
-    .cart-count {
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      width:18px;
-      height:18px;
-      background:var(--accent);
-      color:#fff;
-      border-radius:50%;
-      font-size:10px;
-      font-weight:500;
-      margin-left:6px;
-    }
+    .cart-count { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; background:var(--accent); color:#fff; border-radius:50%; font-size:10px; font-weight:500; margin-left:6px; }
 
-    /* HERO */
-    .hero {
-      text-align:center;
-      padding:80px 40px 60px;
-      border-bottom:1px solid var(--border);
-    }
-    .hero-label {
-      font-size:11px;
-      font-weight:500;
-      letter-spacing:3px;
-      text-transform:uppercase;
-      color:var(--accent);
-      margin-bottom:16px;
-    }
-    .hero h1 {
-      font-family:'Cormorant Garamond',serif;
-      font-size:64px;
-      font-weight:300;
-      color:var(--dark);
-      line-height:1;
-      letter-spacing:-1px;
-    }
+    /* ── HERO ── */
+    .hero { text-align:center; padding:52px 40px 40px; border-bottom:1px solid var(--border); }
+    .hero-label { font-size:11px; font-weight:500; letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+    .hero h1 { font-family:'Cormorant Garamond',serif; font-size:56px; font-weight:300; color:var(--dark); line-height:1; letter-spacing:-1px; }
     .hero h1 em { font-style:italic; color:var(--accent); }
-    .hero p { margin-top:16px; font-size:14px; font-weight:300; color:var(--muted); }
+    .hero p { margin-top:12px; font-size:14px; font-weight:300; color:var(--muted); }
 
-    /* FILTERS */
-    .filters {
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:0;
-      padding:32px 40px;
-      border-bottom:1px solid var(--border);
+    /* ── SECTION NAV (sticky below navbar) ── */
+    .section-nav {
+      position:sticky; top:65px; z-index:150;
+      background:var(--cream); border-bottom:1px solid var(--border);
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 40px; gap:20px;
     }
+    .section-pills { display:flex; overflow-x:auto; scrollbar-width:none; flex:1; }
+    .section-pills::-webkit-scrollbar { display:none; }
+    .section-pill {
+      padding:18px 20px; border:none; border-bottom:2px solid transparent;
+      background:transparent; font-family:'Jost',sans-serif; font-size:11px;
+      font-weight:500; letter-spacing:1px; text-transform:uppercase;
+      color:var(--muted); cursor:pointer; white-space:nowrap; transition:all .2s;
+    }
+    .section-pill:hover { color:var(--dark); }
+    .section-pill.active { color:var(--accent); border-bottom-color:var(--accent); }
+    .veg-filter { display:flex; flex-shrink:0; gap:0; }
     .filter-btn {
-      padding:10px 28px;
-      border:1px solid var(--border);
-      background:transparent;
-      font-family:'Jost',sans-serif;
-      font-size:11px;
-      font-weight:500;
-      letter-spacing:1.5px;
-      text-transform:uppercase;
-      color:var(--muted);
-      cursor:pointer;
-      transition:all .2s;
-      margin:0 -0.5px;
+      padding:8px 14px; border:1px solid var(--border); background:transparent;
+      font-family:'Jost',sans-serif; font-size:10px; font-weight:500;
+      letter-spacing:1.5px; text-transform:uppercase; color:var(--muted);
+      cursor:pointer; transition:all .2s; margin:0 -0.5px;
     }
     .filter-btn:hover,.filter-btn.active { background:var(--dark); color:#fff; border-color:var(--dark); z-index:1; position:relative; }
 
-    /* MENU GRID */
-    .menu-section { padding:48px 40px; }
-    .menu-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:1px; background:var(--border); }
+    /* ── SECTION BLOCKS ── */
+    .menu-content { padding-bottom:80px; }
+    .section-block { padding:40px 40px 0; }
+    .section-title {
+      font-family:'Cormorant Garamond',serif; font-size:34px; font-weight:300;
+      color:var(--dark); margin-bottom:8px; letter-spacing:-0.5px;
+    }
+    .section-subtitle { font-size:12px; font-weight:300; color:var(--muted); margin-bottom:24px; letter-spacing:.5px; }
+    .section-divider { height:1px; background:var(--border); margin-bottom:28px; }
+
+    /* ── MENU GRID ── */
+    .menu-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:1px; background:var(--border); margin-bottom:48px; }
     .menu-card { background:var(--card); overflow:hidden; transition:transform .3s; }
     .menu-card:hover { transform:translateY(-4px); box-shadow:0 20px 40px rgba(0,0,0,0.08); }
-    .card-img { position:relative; overflow:hidden; height:200px; }
+    .card-img { position:relative; overflow:hidden; height:190px; }
     .card-img img { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
     .menu-card:hover .card-img img { transform:scale(1.05); }
-    .card-badge {
-      position:absolute;
-      top:12px;
-      left:12px;
-      padding:3px 10px;
-      font-size:9px;
-      font-weight:500;
-      letter-spacing:1.5px;
-      text-transform:uppercase;
-      border-radius:2px;
-    }
+    .card-badge { position:absolute; top:12px; left:12px; padding:3px 10px; font-size:9px; font-weight:500; letter-spacing:1.5px; text-transform:uppercase; border-radius:2px; }
     .badge-veg { background:rgba(255,255,255,.9); color:#15803D; }
     .badge-nonveg { background:rgba(255,255,255,.9); color:#B91C1C; }
-    .card-body { padding:20px; }
-    .card-name { font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:400; color:var(--dark); margin-bottom:4px; }
-    .card-ing { font-size:11px; font-weight:300; color:var(--muted); margin-bottom:16px; line-height:1.5; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .card-footer { display:flex; align-items:center; justify-content:space-between; }
+    .card-body { padding:18px; }
+    .card-name { font-family:'Cormorant Garamond',serif; font-size:19px; font-weight:400; color:var(--dark); margin-bottom:4px; }
+    .card-ing { font-size:11px; font-weight:300; color:var(--muted); margin-bottom:14px; line-height:1.5; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .card-footer-row { display:flex; align-items:center; justify-content:space-between; }
     .card-price { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:400; color:var(--dark); }
     .card-actions { display:flex; gap:8px; }
-    .btn-ing {
-      padding:7px 12px;
-      border:1px solid var(--border);
-      background:transparent;
-      font-family:'Jost',sans-serif;
-      font-size:10px;
-      font-weight:500;
-      letter-spacing:1px;
-      text-transform:uppercase;
-      color:var(--muted);
-      cursor:pointer;
-      transition:all .2s;
-    }
+    .btn-ing { padding:7px 12px; border:1px solid var(--border); background:transparent; font-family:'Jost',sans-serif; font-size:10px; font-weight:500; letter-spacing:1px; text-transform:uppercase; color:var(--muted); cursor:pointer; transition:all .2s; }
     .btn-ing:hover { border-color:var(--dark); color:var(--dark); }
-    .btn-add {
-      padding:7px 16px;
-      border:1px solid var(--dark);
-      background:var(--dark);
-      font-family:'Jost',sans-serif;
-      font-size:10px;
-      font-weight:500;
-      letter-spacing:1px;
-      text-transform:uppercase;
-      color:#fff;
-      cursor:pointer;
-      transition:all .2s;
-    }
+    .btn-add { padding:7px 16px; border:1px solid var(--dark); background:var(--dark); font-family:'Jost',sans-serif; font-size:10px; font-weight:500; letter-spacing:1px; text-transform:uppercase; color:#fff; cursor:pointer; transition:all .2s; }
     .btn-add:hover { background:var(--accent); border-color:var(--accent); }
 
-    /* MODALS */
+    /* ── MODALS ── */
     .modal-content { border:none; border-radius:0; }
     .modal-header { border-bottom:1px solid var(--border); padding:20px 24px; }
     .modal-title { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:400; }
@@ -187,13 +106,38 @@
     .qty-btn:hover { background:var(--dark); color:#fff; border-color:var(--dark); }
     .cart-total { font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:400; text-align:right; margin-top:16px; }
     .form-control { border:none; border-bottom:1px solid var(--border); border-radius:0; background:transparent; padding:10px 0; font-family:'Jost',sans-serif; font-size:14px; font-weight:300; }
-    .form-control:focus { box-shadow:none; border-bottom-color:var(--accent); }
-    .form-label { font-size:10px; font-weight:500; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+    .form-control:focus { box-shadow:none; border-bottom-color:var(--accent); background:transparent; }
+    .form-label { font-size:10px; font-weight:500; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; display:block; }
     .btn-modal { padding:14px 32px; background:var(--dark); color:#fff; border:none; font-family:'Jost',sans-serif; font-size:11px; font-weight:500; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:background .2s; width:100%; }
     .btn-modal:hover { background:var(--accent); }
-    .empty-cart { text-align:center; padding:32px; color:var(--muted); }
-    .empty-cart .icon { font-size:36px; margin-bottom:12px; }
-    .empty-cart p { font-size:13px; font-weight:300; }
+
+    /* ── SAVED ADDRESS OPTIONS ── */
+    .addr-option-box {
+      display:flex; align-items:flex-start; gap:12px;
+      padding:14px 16px; border:1px solid var(--border);
+      cursor:pointer; transition:border-color .2s, background .2s;
+      margin-bottom:8px;
+    }
+    .addr-option-box:hover { border-color:var(--muted); }
+    .addr-option-box.selected { border-color:var(--accent); background:#FDF6EE; }
+    .radio-circle {
+      width:16px; height:16px; border-radius:50%; border:2px solid var(--border);
+      display:flex; align-items:center; justify-content:center;
+      flex-shrink:0; margin-top:2px; transition:border-color .2s;
+    }
+    .radio-circle.selected { border-color:var(--accent); }
+    .radio-dot { width:8px; height:8px; border-radius:50%; background:transparent; transition:background .2s; }
+    .radio-dot.selected { background:var(--accent); }
+    .addr-label-name { font-size:13px; font-weight:500; color:var(--dark); }
+    .addr-label-text { font-size:12px; font-weight:300; color:var(--muted); margin-top:3px; line-height:1.6; }
+
+    @media(max-width:768px){
+      .navbar { padding:16px 20px; }
+      .section-nav { padding:0 16px; top:62px; }
+      .section-block { padding:28px 16px 0; }
+      .hero { padding:36px 20px 28px; }
+      .hero h1 { font-size:40px; }
+    }
   </style>
 </head>
 <body>
@@ -218,42 +162,77 @@
   <p>Handcrafted dishes, made fresh every day.</p>
 </div>
 
-<!-- FILTERS -->
-<div class="filters">
-  <button class="filter-btn active" onclick="filterMenu('all', this)">All</button>
-  <button class="filter-btn" onclick="filterMenu('veg', this)">Vegetarian</button>
-  <button class="filter-btn" onclick="filterMenu('non-veg', this)">Non-Vegetarian</button>
-</div>
-
-<!-- MENU -->
-<div class="menu-section">
-  <div class="menu-grid" id="menu-container">
-    {% for item in menu_items %}
-    <div class="menu-card" data-category="{{ item[2] }}">
-      <div class="card-img">
-        <img src="/static/{{ item[4] }}" alt="{{ item[1] }}"
-             onerror="this.src='https://via.placeholder.com/400x200/F7F3EE/78716C?text={{ item[1] }}'">
-        <span class="card-badge {{ 'badge-veg' if item[2]=='veg' else 'badge-nonveg' }}">
-          {{ '● Veg' if item[2]=='veg' else '● Non-Veg' }}
-        </span>
-      </div>
-      <div class="card-body">
-        <div class="card-name">{{ item[1] }}</div>
-        <div class="card-ing">{{ item[5] }}</div>
-        <div class="card-footer">
-          <div class="card-price">₹{{ item[3] }}</div>
-          <div class="card-actions">
-            <button class="btn-ing" onclick="showIngredients('{{ item[1] }}', '{{ item[5] }}')">Info</button>
-            <button class="btn-add" onclick="addToCart({{ item[0] }}, '{{ item[1] }}', {{ item[3] }})">+ Add</button>
-          </div>
-        </div>
-      </div>
-    </div>
+<!-- SECTION NAV + VEG FILTER -->
+<div class="section-nav">
+  <div class="section-pills">
+    <button class="section-pill active" data-index="0" onclick="scrollToSection(null, this)">All</button>
+    {% for section_name, _ in sections %}
+    <button class="section-pill" data-index="{{ loop.index }}" onclick="scrollToSection('sec-{{ loop.index }}', this)">
+      {% if section_name == 'Starters' %}🍢
+      {% elif section_name == 'Main Course' %}🍛
+      {% elif section_name == 'Biryani & Rice' %}🍚
+      {% elif section_name == 'Breads' %}🫓
+      {% elif section_name == 'Desserts' %}🍮
+      {% elif section_name == 'Beverages' %}🥤
+      {% else %}🍽
+      {% endif %}
+      {{ section_name }}
+    </button>
     {% endfor %}
+  </div>
+  <div class="veg-filter">
+    <button class="filter-btn active" onclick="filterMenu('all', this)">All</button>
+    <button class="filter-btn" onclick="filterMenu('veg', this)">Veg</button>
+    <button class="filter-btn" onclick="filterMenu('non-veg', this)">Non-Veg</button>
   </div>
 </div>
 
-<!-- CART MODAL -->
+<!-- MENU SECTIONS -->
+<div class="menu-content">
+  {% for section_name, items in sections %}
+  <div class="section-block" id="sec-{{ loop.index }}">
+    <h2 class="section-title">
+      {% if section_name == 'Starters' %}🍢
+      {% elif section_name == 'Main Course' %}🍛
+      {% elif section_name == 'Biryani & Rice' %}🍚
+      {% elif section_name == 'Breads' %}🫓
+      {% elif section_name == 'Desserts' %}🍮
+      {% elif section_name == 'Beverages' %}🥤
+      {% else %}🍽
+      {% endif %}
+      {{ section_name }}
+    </h2>
+    <p class="section-subtitle">{{ items|length }} item{{ 's' if items|length != 1 }}</p>
+    <div class="section-divider"></div>
+    <div class="menu-grid">
+      {% for item in items %}
+      <div class="menu-card" data-category="{{ item[2] }}">
+        <div class="card-img">
+          <img src="/static/{{ item[4] }}" alt="{{ item[1] }}"
+               onerror="this.src='https://via.placeholder.com/400x190/F7F3EE/78716C?text={{ item[1] }}'">
+          <span class="card-badge {{ 'badge-veg' if item[2]=='veg' else 'badge-nonveg' }}">
+            {{ '● Veg' if item[2]=='veg' else '● Non-Veg' }}
+          </span>
+        </div>
+        <div class="card-body">
+          <div class="card-name">{{ item[1] }}</div>
+          <div class="card-ing">{{ item[5] }}</div>
+          <div class="card-footer-row">
+            <div class="card-price">₹{{ item[3] }}</div>
+            <div class="card-actions">
+              <button class="btn-ing" onclick="showIngredients('{{ item[1] }}', '{{ item[5] }}')">Info</button>
+              <button class="btn-add" onclick="addToCart({{ item[0] }}, '{{ item[1] }}', {{ item[3] }})">+ Add</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- ── CART MODAL ── -->
 <div class="modal fade" id="cartModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-end">
     <div class="modal-content">
@@ -272,7 +251,7 @@
   </div>
 </div>
 
-<!-- INGREDIENTS MODAL -->
+<!-- ── INGREDIENTS MODAL ── -->
 <div class="modal fade" id="ingredientsModal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -287,7 +266,7 @@
   </div>
 </div>
 
-<!-- CHECKOUT MODAL -->
+<!-- ── CHECKOUT MODAL ── -->
 <div class="modal fade" id="checkoutModal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -296,14 +275,46 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <div class="mb-4">
-          <label class="form-label">Full Name</label>
-          <input type="text" class="form-control" id="customer-name" placeholder="Your name">
+
+        <!-- SAVED ADDRESS BLOCK (shown by JS if address exists) -->
+        <div id="saved-address-block" style="display:none; margin-bottom:20px;">
+          <label class="form-label" style="margin-bottom:12px;">Choose Delivery Address</label>
+
+          <!-- Option 1: saved address -->
+          <div class="addr-option-box selected" id="opt-saved-box" onclick="selectAddressOption('saved')">
+            <div class="radio-circle selected" id="radio-saved-circle">
+              <div class="radio-dot selected" id="radio-saved-dot"></div>
+            </div>
+            <div>
+              <div class="addr-label-name" id="saved-name-display"></div>
+              <div class="addr-label-text" id="saved-addr-display"></div>
+            </div>
+          </div>
+
+          <!-- Option 2: new address -->
+          <div class="addr-option-box" id="opt-new-box" onclick="selectAddressOption('new')">
+            <div class="radio-circle" id="radio-new-circle">
+              <div class="radio-dot" id="radio-new-dot"></div>
+            </div>
+            <div>
+              <div class="addr-label-name">Deliver to a different address</div>
+              <div class="addr-label-text">Enter a new delivery address</div>
+            </div>
+          </div>
         </div>
-        <div class="mb-3">
-          <label class="form-label">Delivery Address</label>
-          <textarea class="form-control" id="customer-address" rows="3" placeholder="Your full address"></textarea>
+
+        <!-- NEW ADDRESS INPUT (always shown if no saved address) -->
+        <div id="new-address-inputs">
+          <div class="mb-4">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="customer-name" placeholder="Your name">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Delivery Address</label>
+            <textarea class="form-control" id="customer-address" rows="3" placeholder="Your full address"></textarea>
+          </div>
         </div>
+
       </div>
       <div class="modal-footer">
         <button class="btn-modal" onclick="confirmOrder()">Place Order</button>
@@ -315,13 +326,50 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/static/script.js"></script>
 <script>
+// ── Section scroll navigation ──
+function scrollToSection(sectionId, el) {
+  document.querySelectorAll('.section-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  if (!sectionId) {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+  const target = document.getElementById(sectionId);
+  if (target) {
+    const offset = 130;
+    const top = target.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+}
+
+// ── Veg / Non-veg filter ──
 function filterMenu(filter, el) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
-  document.querySelectorAll('.menu-card').forEach(card => {
-    card.style.display = (filter === 'all' || card.dataset.category === filter) ? 'block' : 'none';
+  document.querySelectorAll('.section-block').forEach(section => {
+    let visible = 0;
+    section.querySelectorAll('.menu-card').forEach(card => {
+      const show = filter === 'all' || card.dataset.category === filter;
+      card.style.display = show ? 'block' : 'none';
+      if (show) visible++;
+    });
+    section.style.display = visible === 0 ? 'none' : 'block';
   });
 }
+
+// ── Highlight section pill on scroll ──
+const sectionObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const idx = entry.target.id.replace('sec-', '');
+      document.querySelectorAll('.section-pill').forEach(p => p.classList.remove('active'));
+      const pill = document.querySelector(`.section-pill[data-index="${idx}"]`);
+      if (pill) pill.classList.add('active');
+    }
+  });
+}, { threshold: 0.25, rootMargin: '-130px 0px 0px 0px' });
+
+document.querySelectorAll('.section-block').forEach(s => sectionObserver.observe(s));
 </script>
 </body>
 </html>

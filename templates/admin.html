@@ -85,6 +85,7 @@
               <th>#</th>
               <th>Name</th>
               <th>Category</th>
+              <th>Section</th>
               <th>Price</th>
               <th>Status</th>
               <th>Actions</th>
@@ -100,6 +101,7 @@
                   {{ item[2] }}
                 </span>
               </td>
+              <td><span class="badge bg-secondary">{{ item[7] }}</span></td>
               <td>₹{{ item[3] }}</td>
               <td>
                 {% if item[6] == 1 %}
@@ -183,6 +185,17 @@
             <select name="category" class="form-select" required>
               <option value="veg">🟢 Veg</option>
               <option value="non-veg">🔴 Non-Veg</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Section</label>
+            <select name="section" class="form-select" required>
+              <option value="Starters">🍢 Starters</option>
+              <option value="Main Course">🍛 Main Course</option>
+              <option value="Biryani &amp; Rice">🍚 Biryani &amp; Rice</option>
+              <option value="Breads">🫓 Breads</option>
+              <option value="Desserts">🍮 Desserts</option>
+              <option value="Beverages">🥤 Beverages</option>
             </select>
           </div>
           <div class="mb-3">

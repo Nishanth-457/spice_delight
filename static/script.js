@@ -3,58 +3,33 @@
 // ============================================================
 
 let cart = [];
+let _addressMode = 'new';   // 'saved' or 'new'
+let _savedName   = '';
+let _savedAddr   = '';
 
 // ============================================================
-// TOAST NOTIFICATION — shows bottom right when item added
+// TOAST NOTIFICATION
 // ============================================================
 function showToast(message) {
   const existing = document.getElementById('sd-toast');
   if (existing) existing.remove();
-
   const toast = document.createElement('div');
   toast.id = 'sd-toast';
   toast.innerHTML = message;
   toast.style.cssText = `
-    position: fixed;
-    bottom: 40px;
-    right: 40px;
-    background: #1C1917;
-    color: #fff;
-    padding: 16px 28px;
-    font-family: 'Jost', sans-serif;
-    font-size: 13px;
-    font-weight: 400;
-    letter-spacing: 0.5px;
-    z-index: 99999;
-    opacity: 0;
-    transform: translateY(16px);
-    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-    border-left: 3px solid #C4783C;
-    max-width: 320px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-    pointer-events: none;
+    position:fixed; bottom:40px; right:40px; background:#1C1917; color:#fff;
+    padding:16px 28px; font-family:'Jost',sans-serif; font-size:13px;
+    font-weight:400; letter-spacing:.5px; z-index:99999; opacity:0;
+    transform:translateY(16px); transition:all .35s cubic-bezier(.34,1.56,.64,1);
+    border-left:3px solid #C4783C; max-width:320px;
+    box-shadow:0 8px 32px rgba(0,0,0,.18); pointer-events:none;
   `;
   document.body.appendChild(toast);
-
+  setTimeout(() => { toast.style.opacity='1'; toast.style.transform='translateY(0)'; }, 10);
   setTimeout(() => {
-    toast.style.opacity = '1';
-    toast.style.transform = 'translateY(0)';
-  }, 10);
-
-  setTimeout(() => {
-    toast.style.opacity = '0';
-    toast.style.transform = 'translateY(10px)';
+    toast.style.opacity='0'; toast.style.transform='translateY(10px)';
     setTimeout(() => toast.remove(), 350);
   }, 2500);
-}
-
-// ============================================================
-// Filter menu
-// ============================================================
-function filterMenu(filter) {
-  document.querySelectorAll('.menu-card').forEach(card => {
-    card.style.display = (filter === 'all' || card.dataset.category === filter) ? 'block' : 'none';
-  });
 }
 
 // ============================================================
@@ -63,8 +38,7 @@ function filterMenu(filter) {
 function showIngredients(name, ingredients) {
   document.getElementById('ing-title').innerText = name;
   document.getElementById('ing-text').innerText  = ingredients;
-  const modal = new bootstrap.Modal(document.getElementById('ingredientsModal'));
-  modal.show();
+  new bootstrap.Modal(document.getElementById('ingredientsModal')).show();
 }
 
 // ============================================================
@@ -81,14 +55,14 @@ function addToCart(id, name, price) {
     }
   }
   if (!found) {
-    cart.push({ id: id, name: name, price: price, qty: 1 });
+    cart.push({ id, name, price, qty: 1 });
     showToast(`✓ &nbsp;<strong>${name}</strong> added to cart`);
   }
   updateCartCount();
 }
 
 // ============================================================
-// Update cart badge count on navbar
+// Update cart badge
 // ============================================================
 function updateCartCount() {
   let total = 0;
@@ -101,29 +75,26 @@ function updateCartCount() {
 // ============================================================
 function showCart() {
   updateCartDisplay();
-  const modal = new bootstrap.Modal(document.getElementById('cartModal'));
-  modal.show();
+  new bootstrap.Modal(document.getElementById('cartModal')).show();
 }
 
 // ============================================================
-// Render cart items inside modal
+// Render cart items
 // ============================================================
 function updateCartDisplay() {
   const cartList  = document.getElementById('cart-items');
   const totalSpan = document.getElementById('cart-total');
   cartList.innerHTML = '';
   let total = 0;
-
   if (cart.length === 0) {
     cartList.innerHTML = `
-      <div style="text-align:center; padding:40px; color:#78716C;">
-        <div style="font-size:36px; margin-bottom:12px;">🛒</div>
-        <p style="font-size:13px; font-weight:300;">Your cart is empty</p>
+      <div style="text-align:center;padding:40px;color:#78716C;">
+        <div style="font-size:36px;margin-bottom:12px;">🛒</div>
+        <p style="font-size:13px;font-weight:300;">Your cart is empty</p>
       </div>`;
     totalSpan.innerText = '0';
     return;
   }
-
   cart.forEach((item, i) => {
     let itemTotal = item.price * item.qty;
     total += itemTotal;
@@ -134,9 +105,9 @@ function updateCartDisplay() {
           <div class="cart-item-price">₹${item.price} × ${item.qty} = ₹${itemTotal}</div>
         </div>
         <div class="qty-controls">
-          <button class="qty-btn" onclick="changeQty(${i}, -1)">−</button>
-          <span style="font-size:14px; min-width:20px; text-align:center;">${item.qty}</span>
-          <button class="qty-btn" onclick="changeQty(${i}, 1)">+</button>
+          <button class="qty-btn" onclick="changeQty(${i},-1)">−</button>
+          <span style="font-size:14px;min-width:20px;text-align:center;">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${i},1)">+</button>
         </div>
       </div>`;
   });
@@ -154,15 +125,78 @@ function changeQty(index, change) {
 }
 
 // ============================================================
-// Open checkout modal
+// SAVED ADDRESS — toggle UI between saved / new
+// ============================================================
+function selectAddressOption(mode) {
+  _addressMode = mode;
+  const savedBox  = document.getElementById('opt-saved-box');
+  const newBox    = document.getElementById('opt-new-box');
+  const savedCircle = document.getElementById('radio-saved-circle');
+  const savedDot    = document.getElementById('radio-saved-dot');
+  const newCircle   = document.getElementById('radio-new-circle');
+  const newDot      = document.getElementById('radio-new-dot');
+  const newInputs   = document.getElementById('new-address-inputs');
+
+  if (mode === 'saved') {
+    savedBox.classList.add('selected');
+    newBox.classList.remove('selected');
+    savedCircle.classList.add('selected');
+    savedDot.classList.add('selected');
+    newCircle.classList.remove('selected');
+    newDot.classList.remove('selected');
+    newInputs.style.display = 'none';
+  } else {
+    newBox.classList.add('selected');
+    savedBox.classList.remove('selected');
+    newCircle.classList.add('selected');
+    newDot.classList.add('selected');
+    savedCircle.classList.remove('selected');
+    savedDot.classList.remove('selected');
+    newInputs.style.display = 'block';
+    // Clear inputs for fresh entry
+    document.getElementById('customer-name').value    = '';
+    document.getElementById('customer-address').value = '';
+  }
+}
+
+// ============================================================
+// Open checkout — fetch saved address first
 // ============================================================
 function openCheckout() {
   if (cart.length === 0) { showToast('Your cart is empty!'); return; }
+
   const cartModal = bootstrap.Modal.getInstance(document.getElementById('cartModal'));
   cartModal.hide();
+
+  // Fetch saved address from Flask
+  fetch('/get_saved_address')
+    .then(r => r.json())
+    .then(data => {
+      if (data.saved) {
+        // Show saved address options
+        _savedName = data.name;
+        _savedAddr = data.address;
+        document.getElementById('saved-name-display').textContent = data.name;
+        document.getElementById('saved-addr-display').textContent = data.address;
+        document.getElementById('saved-address-block').style.display = 'block';
+        document.getElementById('new-address-inputs').style.display  = 'none';
+        _addressMode = 'saved';
+        selectAddressOption('saved');
+      } else {
+        // No saved address — just show inputs
+        document.getElementById('saved-address-block').style.display = 'none';
+        document.getElementById('new-address-inputs').style.display  = 'block';
+        _addressMode = 'new';
+      }
+    })
+    .catch(() => {
+      document.getElementById('saved-address-block').style.display = 'none';
+      document.getElementById('new-address-inputs').style.display  = 'block';
+      _addressMode = 'new';
+    });
+
   setTimeout(() => {
-    const checkoutModal = new bootstrap.Modal(document.getElementById('checkoutModal'));
-    checkoutModal.show();
+    new bootstrap.Modal(document.getElementById('checkoutModal')).show();
   }, 300);
 }
 
@@ -170,12 +204,18 @@ function openCheckout() {
 // Confirm order — sends to Flask backend
 // ============================================================
 function confirmOrder() {
-  const name    = document.getElementById('customer-name').value.trim();
-  const address = document.getElementById('customer-address').value.trim();
+  let name, address;
 
-  if (!name || !address) {
-    showToast('Please fill in your name and address!');
-    return;
+  if (_addressMode === 'saved') {
+    name    = _savedName;
+    address = _savedAddr;
+  } else {
+    name    = document.getElementById('customer-name').value.trim();
+    address = document.getElementById('customer-address').value.trim();
+    if (!name || !address) {
+      showToast('Please fill in your name and address!');
+      return;
+    }
   }
 
   let total = 0;
