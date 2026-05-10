@@ -18,7 +18,7 @@ app.secret_key = 'spicedelight_secret_2026'
 # ============================================================
 DB_HOST     = 'localhost'
 DB_USER     = 'root'
-DB_PASSWORD = 'nishanth@rvu'
+DB_PASSWORD = ''
 DB_NAME     = 'spice_delight'
 DB_PORT     = 3306
 
