@@ -11,14 +11,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = 'spicedelight_secret_2026'
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'dev-only-change-me')
 
 # ============================================================
 # DATABASE SETTINGS
 # ============================================================
 DB_HOST     = 'localhost'
 DB_USER     = 'root'
-DB_PASSWORD = ''
+DB_PASSWORD = os.getenv('MYSQLPASSWORD', '')   # set in .env, never in code
 DB_NAME     = 'spice_delight'
 DB_PORT     = 3306
 
@@ -145,37 +145,62 @@ def get_saved_address():
 def place_order():
     if 'user_id' not in session:
         return jsonify({'success': False, 'message': 'Not logged in'}), 401
-    data          = request.get_json()
-    customer_name = data['name']
-    address       = data['address']
-    cart          = data['cart']
-    total_price   = data['total']
+    data          = request.get_json() or {}
+    customer_name = (data.get('name') or '').strip()
+    address       = (data.get('address') or '').strip()
+    cart          = data.get('cart') or []
     user_id       = session['user_id']
+
+    if not customer_name or not address or not cart:
+        return jsonify({'success': False, 'message': 'Name, address and cart are required'}), 400
 
     db  = get_db()
     cur = db.cursor()
+    try:
+        # Never trust prices sent by the browser -- anyone can edit them in DevTools.
+        # Look up the real price/name of every item from the database instead.
+        lines, total_price = [], 0
+        for item in cart:
+            qty = int(item.get('qty', 0))
+            if qty < 1:
+                raise ValueError('Invalid quantity')
+            cur.execute("SELECT name, price FROM menu_items WHERE id=%s AND is_available=1",
+                        (int(item['id']),))
+            row = cur.fetchone()
+            if row is None:
+                raise ValueError('An item in your cart is no longer available')
+            name, price = row
+            lines.append((int(item['id']), name, price, qty))
+            total_price += price * qty
 
-    # Insert the order
-    cur.execute("""
-        INSERT INTO orders (user_id, customer_name, address, total_price)
-        VALUES (%s, %s, %s, %s)
-    """, (user_id, customer_name, address, total_price))
-    order_id = cur.lastrowid
-
-    # Insert each order item
-    for item in cart:
+        # Insert the order
         cur.execute("""
-            INSERT INTO order_items (order_id, menu_item_id, item_name, price, quantity)
-            VALUES (%s, %s, %s, %s, %s)
-        """, (order_id, item['id'], item['name'], item['price'], item['qty']))
+            INSERT INTO orders (user_id, customer_name, address, total_price)
+            VALUES (%s, %s, %s, %s)
+        """, (user_id, customer_name, address, total_price))
+        order_id = cur.lastrowid
 
-    # Save address to user profile for next time
-    cur.execute("""
-        UPDATE users SET saved_name=%s, saved_address=%s WHERE id=%s
-    """, (customer_name, address, user_id))
+        # Insert each order item
+        for item_id, name, price, qty in lines:
+            cur.execute("""
+                INSERT INTO order_items (order_id, menu_item_id, item_name, price, quantity)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (order_id, item_id, name, price, qty))
 
-    db.commit()
-    cur.close(); db.close()
+        # Save address to user profile for next time
+        cur.execute("""
+            UPDATE users SET saved_name=%s, saved_address=%s WHERE id=%s
+        """, (customer_name, address, user_id))
+
+        db.commit()          # all inserts succeed together...
+    except (ValueError, KeyError, TypeError) as e:
+        db.rollback()        # ...or none of them are saved
+        return jsonify({'success': False, 'message': str(e)}), 400
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        cur.close(); db.close()
     return jsonify({'success': True, 'order_id': order_id})
 
 # ============================================================

@@ -135,3 +135,79 @@ INSERT INTO menu_items (name, category, price, img, ingredients, section) VALUES
 -- Verify
 -- ============================================================
 SELECT name, section, category, price FROM menu_items ORDER BY section;
+
+
+-- ============================================================
+-- QUERIES USED IN THE APPLICATION
+-- ============================================================
+
+-- ── LOGIN AUTHENTICATION ──
+SELECT * FROM users 
+WHERE email='admin@spicedelight.com' AND password='240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9';
+
+-- ── CHECK DUPLICATE EMAIL ON SIGNUP ──
+SELECT id FROM users WHERE email='user@email.com';
+
+-- ── FETCH ALL AVAILABLE MENU ITEMS ──
+SELECT * FROM menu_items WHERE is_available=1;
+
+-- ── FETCH MENU ITEMS BY SECTION ──
+SELECT * FROM menu_items WHERE is_available=1 ORDER BY section;
+
+-- ── PLACE AN ORDER ──
+INSERT INTO orders (user_id, customer_name, address, total_price)
+VALUES (1, 'Nishanth', '123 Main St, Bangalore', 600.00);
+
+-- ── ADD ORDER ITEMS ──
+INSERT INTO order_items (order_id, menu_item_id, item_name, price, quantity)
+VALUES (1, 1, 'Paneer Tikka', 280.00, 2);
+
+-- ── SAVE DELIVERY ADDRESS TO USER PROFILE ──
+UPDATE users SET saved_name='Nishanth', saved_address='123 Main St, Bangalore' 
+WHERE id=1;
+
+-- ── GET SAVED ADDRESS FOR CHECKOUT ──
+SELECT saved_name, saved_address FROM users WHERE id=1;
+
+-- ── VIEW USER ORDER HISTORY ──
+SELECT id, customer_name, address, total_price, status, ordered_at
+FROM orders WHERE user_id=1 ORDER BY ordered_at DESC;
+
+-- ── ADMIN: VIEW ALL ORDERS ──
+SELECT id, customer_name, total_price, status, ordered_at 
+FROM orders ORDER BY ordered_at DESC;
+
+-- ── ADMIN: TOGGLE MENU ITEM VISIBILITY ──
+UPDATE menu_items SET is_available = 1 - is_available WHERE id=1;
+
+-- ── ADMIN: DELETE MENU ITEM ──
+DELETE FROM menu_items WHERE id=1;
+
+-- ── ADMIN: ADD NEW MENU ITEM ──
+INSERT INTO menu_items (name, category, price, img, ingredients, section)
+VALUES ('Paneer Tikka', 'veg', 280, 'images/PannerTikka.jpg', 'Paneer, Yogurt, Spices', 'Starters');
+
+-- ── 2-TABLE JOIN: ORDERS WITH CUSTOMER DETAILS ──
+SELECT o.id AS order_id, u.name AS customer_name, u.email,
+       o.total_price, o.status, o.ordered_at
+FROM orders o
+JOIN users u ON o.user_id = u.id
+ORDER BY o.ordered_at DESC;
+
+-- ── 3-TABLE JOIN: ORDER ITEMS WITH DISH AND CUSTOMER DETAILS ──
+SELECT o.id AS order_id, u.name AS customer_name,
+       oi.item_name, oi.quantity, oi.price,
+       (oi.quantity * oi.price) AS subtotal, o.status
+FROM orders o
+JOIN users u ON o.user_id = u.id
+JOIN order_items oi ON o.id = oi.order_id
+ORDER BY o.id;
+
+-- ── TOTAL REVENUE PER CUSTOMER ──
+SELECT u.name, u.email,
+       COUNT(o.id) AS total_orders,
+       SUM(o.total_price) AS total_spent
+FROM users u
+JOIN orders o ON u.id = o.user_id
+GROUP BY u.id, u.name, u.email
+ORDER BY total_spent DESC;

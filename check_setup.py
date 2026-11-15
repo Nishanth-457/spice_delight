@@ -1,4 +1,5 @@
 import sys
+import os
 print("=" * 50)
 print("  Spice Delight — Setup Checker")
 print("=" * 50)
@@ -25,11 +26,13 @@ except ImportError:
 
 # Check 4: MySQL connection
 print("\n[4] Testing MySQL connection...")
-DB_PASSWORD = ''   # change this if your MySQL has a password
+from dotenv import load_dotenv
+load_dotenv()
+DB_PASSWORD = os.getenv('MYSQLPASSWORD', '')   # set in .env
 
 try:
     conn = pymysql.connect(host='localhost', user='root',
-                           password='nishanth@rvu', database='spice_delight')
+                           password=DB_PASSWORD, database='spice_delight')
     cur = conn.cursor()
     for table in ['users','menu_items','orders','order_items']:
         cur.execute(f"SHOW TABLES LIKE '{table}'")

@@ -235,7 +235,7 @@ function confirmOrder() {
       updateCartCount();
       showToast(`✓ &nbsp;Order #${data.order_id} placed successfully!`);
     } else {
-      showToast('Something went wrong. Try again.');
+      showToast(data.message || 'Something went wrong. Try again.');
     }
   })
   .catch(() => showToast('Network error. Please try again.'));
